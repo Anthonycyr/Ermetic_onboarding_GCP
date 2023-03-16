@@ -93,3 +93,7 @@ resource "google_pubsub_subscription_iam_member" "pubsub-subsciption-role" {
   role         = "roles/pubsub.subscriber"
   member       = local.member
 }
+
+output "subscription-id" {
+  value = "projects/${local.project_id}/subscriptions/${google_pubsub_subscription.ermtetic-topic-sub.name}"
+}
