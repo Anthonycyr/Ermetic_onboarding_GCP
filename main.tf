@@ -19,12 +19,6 @@ locals {
   "roles/iam.securityReviewer",
   "roles/resourcemanager.organizationViewer"
   ]
-
-  inclusion_list = [
-  "activity",
-  "data_access",
-  "policy"
-  ]
   
   exclusion_list = [
   "-:*",
@@ -70,7 +64,6 @@ resource "google_logging_organization_sink" "ermetic-audit-log" {
 
   # Can export to pubsub, cloud storage, or bigquery
   destination = "pubsub.googleapis.com/projects/${local.project_id}/topics/${google_pubsub_topic.ermetic-topic.name}"
-  for_each = toset(local.inclusion_list)
   filter = "LOG_ID(cloudaudit.googleapis.com/activity) OR LOG_ID(cloudaudit.googleapis.com/data_access) OR LOG_ID(cloudaudit.googleapis.com/policy)"
 }
 
