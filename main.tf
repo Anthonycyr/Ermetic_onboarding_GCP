@@ -27,9 +27,9 @@ locals {
   
   exclusion_list = [
   "-:*",
-  "=~'^system:'",
-  "=~'@container-engine-robot.iam.gserviceaccount.com$'",
-  "=~'@security-center-api.iam.gserviceaccount.com$'"
+  "=~\"^system:\"",
+  "=~\"@container-engine-robot.iam.gserviceaccount.com$\"",
+  "=~\"@security-center-api.iam.gserviceaccount.com$\""
   ]
 
 }
@@ -77,12 +77,13 @@ resource "google_logging_organization_sink" "ermetic-audit-log" {
 # Add sink exclusion 
 ###############################################################
 resource "google_logging_organization_exclusion" "sink-exclusion" {
-  for_each = toset(local.exclusion_list)
+  
   name = "exclude-k8s-logs"
   org_id = local.org_id
 
   description = "Exclude kubernetes logs"
-
+  
+  for_each = toset(local.exclusion_list)
   # Exclude all DEBUG or lower severity messages relating to instances
   filter = "protoPayload.authenticationInfo.principalEmail${each.value} OR"
 }
