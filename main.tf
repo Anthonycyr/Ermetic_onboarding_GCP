@@ -55,7 +55,7 @@ resource "google_pubsub_topic" "ermetic-topic" {
 }
 
 ###############################################################
-# Create a Sink
+# Create a Sink with filter IN
 ###############################################################
 resource "google_logging_organization_sink" "ermetic-audit-log" {
   name   = "ermetic-audit-log"
@@ -69,7 +69,7 @@ resource "google_logging_organization_sink" "ermetic-audit-log" {
 }
 
 ###############################################################
-# Add sink exclusion
+# Add sink exclusion 
 ###############################################################
 resource "google_logging_organization_exclusion" "sink-exclusion" {
   for_each = toset(local.exclusion_list)
