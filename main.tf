@@ -19,12 +19,17 @@ locals {
   "roles/resourcemanager.organizationViewer"
   ]
 
-  inclusion_list = ["activity","data_access","policy"]
+  inclusion_list = [
+    "activity",
+    "data_access",
+    "policy"
+    ]
   
-  exclusion_list = ["*",
-  "^system:",
-  "@container-engine-robot.iam.gserviceaccount.com$",
-  "@security-center-api.iam.gserviceaccount.com$"
+  exclusion_list = [
+  "-:*",
+  "=~'^system:'",
+  "=~'@container-engine-robot.iam.gserviceaccount.com$'",
+  "=~'@security-center-api.iam.gserviceaccount.com$'"
   ]
 
 }
@@ -79,7 +84,7 @@ resource "google_logging_organization_exclusion" "sink-exclusion" {
   description = "Exclude kubernetes logs"
 
   # Exclude all DEBUG or lower severity messages relating to instances
-  filter = "protoPayload.authenticationInfo.principalEmail=${each.value} OR"
+  filter = "protoPayload.authenticationInfo.principalEmail${each.value} OR"
 }
 
 ###############################################################
