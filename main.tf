@@ -20,12 +20,6 @@ locals {
   "roles/resourcemanager.organizationViewer"
   ]
   
-  # exclusion_list = [
-  # "-:*",
-  # "=~\"^system:\"",
-  # "=~\"@container-engine-robot.iam.gserviceaccount.com$\"",
-  # "=~\"@security-center-api.iam.gserviceaccount.com$\""
-  # ]
 
 }
 
@@ -42,7 +36,7 @@ resource "google_organization_iam_member" "adding-role-sa" {
 
   org_id  = local.org_id
   role    = each.value
-  member  = "serviceAccount:${local.member}"
+  member  = local.member
 }
 
 ###############################################################
@@ -85,7 +79,7 @@ resource "google_logging_organization_exclusion" "sink-exclusion" {
 ###############################################################
 # Create a Subscription
 ###############################################################
-resource "google_pubsub_subscription" "ermtetic-topic-sub" {
+resource "google_pubsub_subscription" "ermetic-topic-sub" {
   name  = "ermetic-topic-sub"
   topic = google_pubsub_topic.ermetic-topic.name
 
@@ -108,8 +102,8 @@ resource "google_pubsub_subscription" "ermtetic-topic-sub" {
 ###############################################################
 # Add subscription role to the principal(member)
 ###############################################################
-resource "google_pubsub_subscription_iam_member" "pubsub-subsciption-role" {
-  subscription = google_pubsub_subscription.ermtetic-topic-sub.name
+resource "google_pubsub_subscription_iam_member" "pubsub-subscription-role" {
+  subscription = google_pubsub_subscription.ermetic-topic-sub.name
   role         = "roles/pubsub.subscriber"
   member       = "serviceAccount:${local.member}"
 }
