@@ -36,7 +36,7 @@ resource "google_organization_iam_member" "adding-role-sa" {
 
   org_id  = local.org_id
   role    = each.value
-  member  = local.member
+  member  = "serviceAccount:${local.member}"
 }
 
 ###############################################################
@@ -109,5 +109,5 @@ resource "google_pubsub_subscription_iam_member" "pubsub-subscription-role" {
 }
 
 output "subscription-id" {
-  value = "projects/${local.project_id}/subscriptions/${google_pubsub_subscription.ermtetic-topic-sub.name}"
+  value = "projects/${local.project_id}/subscriptions/${google_pubsub_subscription.ermetic-topic-sub.name}"
 }
