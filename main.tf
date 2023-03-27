@@ -4,7 +4,7 @@
 locals {
   org_id = "153899115474"
   project_id = "ermeticproject-379819"
-  member = "service_account:ermetic-test-2@ermeticproject-379819.iam.gserviceaccount.com"
+  member = "ermetic-sa@ermeticproject-379819.iam.gserviceaccount.com"
   region = "us-east1"
   
   roles_list = ["roles/appengine.appViewer",
@@ -47,7 +47,7 @@ resource "google_organization_iam_member" "adding-role-sa" {
 
   org_id  = local.org_id
   role    = each.value
-  member  = local.member
+  member  = "service_account:${local.member}"
 }
 
 ###############################################################
@@ -117,7 +117,7 @@ resource "google_pubsub_subscription" "ermtetic-topic-sub" {
 resource "google_pubsub_subscription_iam_member" "pubsub-subsciption-role" {
   subscription = google_pubsub_subscription.ermtetic-topic-sub.name
   role         = "roles/pubsub.subscriber"
-  member       = local.member
+  member       = "service_account:${local.member}"
 }
 
 output "subscription-id" {
