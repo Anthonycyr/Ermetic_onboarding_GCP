@@ -20,12 +20,12 @@ locals {
   "roles/resourcemanager.organizationViewer"
   ]
   
-  exclusion_list = [
-  "-:*",
-  "=~\"^system:\"",
-  "=~\"@container-engine-robot.iam.gserviceaccount.com$\"",
-  "=~\"@security-center-api.iam.gserviceaccount.com$\""
-  ]
+  # exclusion_list = [
+  # "-:*",
+  # "=~\"^system:\"",
+  # "=~\"@container-engine-robot.iam.gserviceaccount.com$\"",
+  # "=~\"@security-center-api.iam.gserviceaccount.com$\""
+  # ]
 
 }
 
@@ -79,7 +79,7 @@ resource "google_logging_organization_exclusion" "sink-exclusion" {
   
   for_each = toset(local.exclusion_list)
   # Exclude all DEBUG or lower severity messages relating to instances
-  filter = "protoPayload.authenticationInfo.principalEmail${each.value} OR"
+  filter = "protoPayload.authenticationInfo.principalEmail-:* OR protoPayload.authenticationInfo.principalEmail=~\"^system:\" OR protoPayload.authenticationInfo.principalEmail=~\"@container-engine-robot.iam.gserviceaccount.com$\" OR protoPayload.authenticationInfo.principalEmail=~\"@security-center-api.iam.gserviceaccount.com$\""
 }
 
 ###############################################################
