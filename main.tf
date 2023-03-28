@@ -60,22 +60,28 @@ resource "google_logging_organization_sink" "ermetic-audit-log" {
   # Can export to pubsub, cloud storage, or bigquery
   destination = "pubsub.googleapis.com/projects/${local.project_id}/topics/${google_pubsub_topic.ermetic-topic.name}"
   filter = "LOG_ID(cloudaudit.googleapis.com/activity) OR LOG_ID(cloudaudit.googleapis.com/data_access) OR LOG_ID(cloudaudit.googleapis.com/policy)"
+
+  exclusions {
+    name = "exclude-k8s-logs"
+    description = "Exclude kubernetes logs"
+    filter = "protoPayload.authenticationInfo.principalEmail-:* OR protoPayload.authenticationInfo.principalEmail=~\"^system:\" OR protoPayload.authenticationInfo.principalEmail=~\"@container-engine-robot.iam.gserviceaccount.com$\" OR protoPayload.authenticationInfo.principalEmail=~\"@security-center-api.iam.gserviceaccount.com$\""
+  }
 }
 
 ###############################################################
 # Add sink exclusion 
 ###############################################################
-resource "google_logging_organization_exclusion" "sink-exclusion" {
+# resource "google_logging_organization_exclusion" "sink-exclusion" {
   
-  name = "exclude-k8s-logs"
-  org_id = local.org_id
+#   name = "exclude-k8s-logs"
+#   org_id = local.org_id
 
-  description = "Exclude kubernetes logs"
+#   description = "Exclude kubernetes logs"
   
-  # for_each = toset(local.exclusion_list)
-  # Exclude all DEBUG or lower severity messages relating to instances
-  filter = "protoPayload.authenticationInfo.principalEmail-:* OR protoPayload.authenticationInfo.principalEmail=~\"^system:\" OR protoPayload.authenticationInfo.principalEmail=~\"@container-engine-robot.iam.gserviceaccount.com$\" OR protoPayload.authenticationInfo.principalEmail=~\"@security-center-api.iam.gserviceaccount.com$\""
-}
+#   # for_each = toset(local.exclusion_list)
+#   # Exclude all DEBUG or lower severity messages relating to instances
+#   filter = "protoPayload.authenticationInfo.principalEmail-:* OR protoPayload.authenticationInfo.principalEmail=~\"^system:\" OR protoPayload.authenticationInfo.principalEmail=~\"@container-engine-robot.iam.gserviceaccount.com$\" OR protoPayload.authenticationInfo.principalEmail=~\"@security-center-api.iam.gserviceaccount.com$\""
+# }
 
 ###############################################################
 # Create a Subscription
