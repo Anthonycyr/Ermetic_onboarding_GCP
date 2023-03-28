@@ -55,6 +55,7 @@ resource "google_logging_organization_sink" "ermetic-audit-log" {
   name   = "ermetic-audit-log"
   description = "Sink created for the Ermetic Solution"
   org_id = local.org_id
+  include_children = true
 
   # Can export to pubsub, cloud storage, or bigquery
   destination = "pubsub.googleapis.com/projects/${local.project_id}/topics/${google_pubsub_topic.ermetic-topic.name}"
